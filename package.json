@@ -1,0 +1,16 @@
+{
+  "name": "@codica/code",
+  "version": "1.0.0",
+  "description": "[![Actions Status](https://github.com/Shi0-X/fullstack-javascript-project-103/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Shi0-X/fullstack-javascript-project-103/actions)",
+  "main": "gendiff.js",
+  "type": "module",
+  "scripts": {
+    "start": "node gendiff.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^12.1.0"
+  }
+}
