@@ -1,18 +1,36 @@
-const genDiff = (data1, data2) => {
-  const keys = new Set([...Object.keys(data1), ...Object.keys(data2)]);
-  const result = [];
+import fs from 'fs';
+import path from 'path';
+import _ from 'lodash';
 
-  keys.forEach((key) => {
-    if (!Object.hasOwn(data2, key)) {
-      result.push(`  - ${key}: ${data1[key]}`); // Clave eliminada
-    } else if (!Object.hasOwn(data1, key)) {
-      result.push(`  + ${key}: ${data2[key]}`); // Clave añadida
-    } else if (data1[key] !== data2[key]) {
-      result.push(`  - ${key}: ${data1[key]}`); // Clave modificada
-      result.push(`  + ${key}: ${data2[key]}`); // Nuevo valor
-    } else {
-      result.push(`    ${key}: ${data1[key]}`); // Sin cambios
+// Función para leer y parsear un archivo JSON
+const parseJSON = (filepath) => {
+  const fullPath = path.resolve(process.cwd(), filepath);
+  const data = fs.readFileSync(fullPath, 'utf-8');
+  return JSON.parse(data);
+};
+
+// Función para generar el diff entre dos archivos JSON
+const genDiff = (filepath1, filepath2) => {
+  const data1 = parseJSON(filepath1);
+  const data2 = parseJSON(filepath2);
+
+  // Obtener las claves únicas ordenadas alfabéticamente
+  const allKeys = _.sortBy(_.union(_.keys(data1), _.keys(data2)));
+
+  const result = allKeys.map((key) => {
+    if (!_.has(data2, key)) {
+      return `  - ${key}: ${data1[key]}`;  // Clave solo en el archivo 1
     }
+    if (!_.has(data1, key)) {
+      return `  + ${key}: ${data2[key]}`;  // Clave solo en el archivo 2
+    }
+    if (data1[key] !== data2[key]) {
+      return [
+        `  - ${key}: ${data1[key]}`,       // Clave presente en ambos pero con valores diferentes
+        `  + ${key}: ${data2[key]}`,
+      ].join('\n');
+    }
+    return `    ${key}: ${data1[key]}`;    // Clave con el mismo valor en ambos archivos
   });
 
   return `{\n${result.join('\n')}\n}`;
