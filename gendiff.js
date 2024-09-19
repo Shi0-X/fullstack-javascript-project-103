@@ -2,7 +2,7 @@
 /* eslint-env node */
 
 import { Command } from 'commander';
-import genDiff from './src/index.js'; // Asegúrate de usar una ruta relativa aquí
+import genDiff from './src/index.js';
 
 const program = new Command();
 
