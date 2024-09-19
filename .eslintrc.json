@@ -11,7 +11,11 @@
     },
     "rules": {
       "semi": ["error", "always"],
-      "quotes": ["error", "single"]
+      "quotes": ["error", "single"],
+      "no-multi-spaces": ["error", { "ignoreEOLComments": false }],
+      "no-trailing-spaces": "error", // Elimina espacios en blanco al final de las líneas
+      "indent": ["error", 2], // Asegura una indentación consistente de 2 espacios
+      "max-len": ["error", { "code": 80 }] // Limita la longitud de las líneas a 80 caracteres
     }
   }
   
