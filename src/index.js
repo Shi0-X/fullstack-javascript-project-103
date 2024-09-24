@@ -13,13 +13,13 @@ const getData = (filepath) => {
   const data = fs.readFileSync(absolutePath, 'utf-8');
 
   switch (extname) {
-    case '.json':
-      return JSON.parse(data);
-    case '.yml':
-    case '.yaml':
-      return yaml.load(data);
-    default:
-      throw new Error(`Unsupported file format: ${extname}`);
+  case '.json':
+    return JSON.parse(data);
+  case '.yml':
+  case '.yaml':
+    return yaml.load(data);
+  default:
+    throw new Error(`Unsupported file format: ${extname}`);
   }
 };
 
@@ -61,18 +61,18 @@ const genDiff = (file1Path, file2Path) => {
 const formatDiff = (diff) => {
   return diff.children.map((node) => {
     switch (node.type) {
-      case 'added':
-        return `  + ${node.key}: ${node.value}`;
-      case 'deleted':
-        return `  - ${node.key}: ${node.value}`;
-      case 'changed':
-        return `  - ${node.key}: ${node.value1}\n  + ${node.key}: ${node.value2}`;
-      case 'unchanged':
-        return `    ${node.key}: ${node.value}`;
-      case 'nested':
-        return `    ${node.key}: { ${formatDiff(node)} }`;
-      default:
-        return '';
+    case 'added':
+      return `  + ${node.key}: ${node.value}`;
+    case 'deleted':
+      return `  - ${node.key}: ${node.value}`;
+    case 'changed':
+      return `  - ${node.key}: ${node.value1}\n  + ${node.key}: ${node.value2}`;
+    case 'unchanged':
+      return `    ${node.key}: ${node.value}`;
+    case 'nested':
+      return `    ${node.key}: { ${formatDiff(node)} }`;
+    default:
+      return '';
     }
   }).join('\n');
 };
