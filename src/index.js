@@ -1,43 +1,52 @@
-/* eslint-env node */
-
+import pkg from 'json5';
+const { parse } = pkg;
 import fs from 'fs';
 import path from 'path';
-import _ from 'lodash';
 
-// Función para leer y parsear un archivo JSON
-const parseJSON = (filepath) => {
-  const fullPath = path.resolve(process.cwd(), filepath);
-  const data = fs.readFileSync(fullPath, 'utf-8');
-  return JSON.parse(data);
+// Función para leer y parsear el contenido del archivo
+const getData = (filepath) => {
+  const absolutePath = path.resolve(filepath);
+  const data = fs.readFileSync(absolutePath, 'utf-8');
+  return parse(data);
 };
 
-// Función para generar el diff entre dos archivos JSON
-const genDiff = (filepath1, filepath2) => {
-  const data1 = parseJSON(filepath1);
-  const data2 = parseJSON(filepath2);
+// Función recursiva para generar diferencias
+const buildDiff = (data1, data2) => {
+  const keys = Array.from(new Set([...Object.keys(data1), ...Object.keys(data2)]));
 
-  // Obtener las claves únicas ordenadas alfabéticamente
-  const allKeys = _.sortBy(_.union(
-    _.keys(data1), _.keys(data2),
-  ));
-
-  const result = allKeys.map((key) => {
-    if (!_.has(data2, key)) {
-      return `  - ${key}: ${data1[key]}`; // Clave solo en el archivo 1
+  return keys.sort().map((key) => {
+    if (!(key in data1)) {
+      return { key, type: 'added', value: data2[key] };
     }
-    if (!_.has(data1, key)) {
-      return `  + ${key}: ${data2[key]}`; // Clave solo en el archivo 2
+    if (!(key in data2)) {
+      return { key, type: 'deleted', value: data1[key] };
     }
     if (data1[key] !== data2[key]) {
-      return [
-        `  - ${key}: ${data1[key]}`,
-        `  + ${key}: ${data2[key]}`,
-      ].join('\n');
+      // Si ambos valores son objetos, llamamos a la función recursiva
+      if (typeof data1[key] === 'object' && data1[key] !== null && typeof data2[key] === 'object' && data2[key] !== null) {
+        return { key, type: 'nested', children: buildDiff(data1[key], data2[key]) };
+      }
+      return { key, type: 'changed', value1: data1[key], value2: data2[key] };
     }
-    return `    ${key}: ${data1[key]}`;
+    return { key, type: 'unchanged', value: data1[key] };
   });
+};
 
-  return `{\n${result.join('\n')}\n}`;
+// Función para generar la diferencia entre dos archivos
+const genDiff = (file1Path, file2Path) => {
+  const data1 = getData(file1Path);
+  const data2 = getData(file2Path);
+
+  console.log('Data 1:', data1); // Imprime los datos del primer archivo
+  console.log('Data 2:', data2); // Imprime los datos del segundo archivo
+
+  const diff = {
+    type: 'root',
+    children: buildDiff(data1, data2)
+  };
+
+  console.log('Diff:', diff); // Imprime la diferencia generada
+  return diff; // Retornar el resultado como objeto
 };
 
 export default genDiff;
