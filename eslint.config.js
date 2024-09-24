@@ -14,7 +14,7 @@ export default [
       'no-multi-spaces': ['error', { ignoreEOLComments: false }],
       'no-trailing-spaces': 'error',
       indent: ['error', 2],
-      'max-len': ['error', { code: 80 }],
+      'max-len': ['error', { code: 150 }], // Cambiado a 150 caracteres
     },
   },
 ];

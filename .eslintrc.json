@@ -1,21 +1,24 @@
 {
-    "env": {
-      "browser": true,
-      "node": true,
-      "es2021": true
-    },
-    "extends": "airbnb-base",
-    "parserOptions": {
-      "ecmaVersion": 12,
-      "sourceType": "module"
-    },
-    "rules": {
-      "semi": ["error", "always"],
-      "quotes": ["error", "single"],
-      "no-multi-spaces": ["error", { "ignoreEOLComments": false }],
-      "no-trailing-spaces": "error", // Elimina espacios en blanco al final de las líneas
-      "indent": ["error", 2], // Asegura una indentación consistente de 2 espacios
-      "max-len": ["error", { "code": 80 }] // Limita la longitud de las líneas a 80 caracteres
-    }
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2021": true
+  },
+  "extends": "airbnb-base",
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "rules": {
+    "semi": ["error", "always"], // Requiere punto y coma al final de las declaraciones
+    "quotes": ["error", "single"], // Usa comillas simples
+    "no-multi-spaces": ["error", { "ignoreEOLComments": false }], // No permite múltiples espacios en blanco
+    "no-trailing-spaces": "error", // Elimina espacios en blanco al final de las líneas
+    "indent": ["error", 2], // Asegura una indentación consistente de 2 espacios
+    "max-len": ["warn", { "code": 150 }], // Aumenta la longitud máxima de línea a 150 caracteres y cambia a advertencia
+    "linebreak-style": ["error", "unix"], // Asegura que se utilice LF como estilo de final de línea (Unix)
+    "consistent-return": "error", // Asegura que todas las funciones devuelvan valores consistentes
+    "no-console": "off", // Permite el uso de console.log()
+    "indent": ["error", 2, { "SwitchCase": 1 }] // Asegura que la indentación en los switch case esté correcta
   }
-  
+}
