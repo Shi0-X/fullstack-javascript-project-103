@@ -1,4 +1,4 @@
-import genDiff from '../src/index.js'; 
+import genDiff from '../src/index.js';
 import getFixturePath from '../src/getFixturePath.js';
 import jsonResult from '../__fixtures__/jsonResult.js'; // Importamos jsonResult
 
