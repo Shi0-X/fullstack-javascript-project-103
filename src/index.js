@@ -1,27 +1,8 @@
 // src/index.js
 
-import pkg from 'json5';
-const { parse } = pkg;
+import parseFile from './parsers.js'; // Importar el nuevo módulo
 import fs from 'fs';
 import path from 'path';
-import yaml from 'js-yaml';
-
-// Función para leer y parsear el contenido del archivo
-const getData = (filepath) => {
-  const absolutePath = path.resolve(filepath);
-  const extname = path.extname(absolutePath);
-  const data = fs.readFileSync(absolutePath, 'utf-8');
-
-  switch (extname) {
-  case '.json':
-    return JSON.parse(data);
-  case '.yml':
-  case '.yaml':
-    return yaml.load(data);
-  default:
-    throw new Error(`Unsupported file format: ${extname}`);
-  }
-};
 
 // Función recursiva para generar diferencias
 const buildDiff = (data1, data2) => {
@@ -46,8 +27,8 @@ const buildDiff = (data1, data2) => {
 
 // Función para generar la diferencia entre dos archivos
 const genDiff = (file1Path, file2Path) => {
-  const data1 = getData(file1Path);
-  const data2 = getData(file2Path);
+  const data1 = parseFile(file1Path); // Usar el parser para analizar archivos
+  const data2 = parseFile(file2Path);
 
   const diff = {
     type: 'root',
@@ -59,7 +40,7 @@ const genDiff = (file1Path, file2Path) => {
 
 // Nueva función para formatear la salida
 const formatDiff = (diff) => {
-  return diff.children.map((node) => {
+  const formattedDiff = diff.children.map((node) => {
     switch (node.type) {
     case 'added':
       return `  + ${node.key}: ${node.value}`;
@@ -70,11 +51,14 @@ const formatDiff = (diff) => {
     case 'unchanged':
       return `    ${node.key}: ${node.value}`;
     case 'nested':
-      return `    ${node.key}: { ${formatDiff(node)} }`;
+      return `    ${node.key}: {\n${formatDiff(node)}\n    }`;
     default:
       return '';
     }
   }).join('\n');
+
+  // Envolver el resultado completo con llaves {}
+  return `{\n${formattedDiff}\n}`;
 };
 
 // Exportar la función genDiff como exportación por defecto y la función formatDiff como exportación nombrada
