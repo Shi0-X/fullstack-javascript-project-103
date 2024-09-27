@@ -1,10 +1,29 @@
-// src/index.js
-
-import parseFile from './parsers.js'; // Importar el nuevo módulo
 import fs from 'fs';
 import path from 'path';
+import YAML from 'yaml';
 
-// Función recursiva para generar diferencias
+const determineFormat = (filePath) => {
+  const ext = path.extname(filePath).slice(1);
+  if (ext === 'json' || ext === 'yaml' || ext === 'yml') {
+    return ext;
+  }
+  throw new Error(`Unsupported file format: ${ext}`);
+};
+
+const parseFile = (filePath) => {
+  const format = determineFormat(filePath);
+  const content = fs.readFileSync(filePath, 'utf-8');
+
+  if (format === 'json') {
+    return JSON.parse(content);
+  }
+  if (format === 'yaml' || format === 'yml') {
+    return YAML.parse(content);
+  }
+
+  return null;
+};
+
 const buildDiff = (data1, data2) => {
   const keys = Array.from(new Set([...Object.keys(data1), ...Object.keys(data2)]));
 
@@ -25,49 +44,11 @@ const buildDiff = (data1, data2) => {
   });
 };
 
-// Función para generar la diferencia entre dos archivos
 const genDiff = (file1Path, file2Path) => {
-  const data1 = parseFile(file1Path); // Usar el parser para analizar archivos
+  const data1 = parseFile(file1Path);
   const data2 = parseFile(file2Path);
-
-  const diff = {
-    type: 'root',
-    children: buildDiff(data1, data2),
-  };
-
+  const diff = buildDiff(data1, data2);
   return diff;
 };
 
-// Nueva función para formatear la salida
-const formatDiff = (diff) => {
-  const formattedDiff = diff.children.map((node) => {
-    switch (node.type) {
-    case 'added':
-      return `  + ${node.key}: ${node.value}`;
-    case 'deleted':
-      return `  - ${node.key}: ${node.value}`;
-    case 'changed':
-      return `  - ${node.key}: ${node.value1}\n  + ${node.key}: ${node.value2}`;
-    case 'unchanged':
-      return `    ${node.key}: ${node.value}`;
-    case 'nested':
-      return `    ${node.key}: {\n${formatDiff(node)}\n    }`;
-    default:
-      return '';
-    }
-  }).join('\n');
-
-  // Envolver el resultado completo con llaves {}
-  return `{\n${formattedDiff}\n}`;
-};
-
-// Exportar la función genDiff como exportación por defecto y la función formatDiff como exportación nombrada
 export default genDiff;
-export { formatDiff };
-
-// Lógica para ejecutar el script directamente
-if (import.meta.url === 'file://' + process.argv[1]) {
-  const [file1, file2] = process.argv.slice(2);
-  const diff = genDiff(file1, file2);
-  console.log(formatDiff(diff));
-}

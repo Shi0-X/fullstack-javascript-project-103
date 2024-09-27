@@ -1,19 +1,28 @@
-// gendiff.js
-
 import { Command } from 'commander';
-import genDiff, { formatDiff } from './src/index.js'; // Importar genDiff como exportación por defecto
+import genDiff from './src/index.js';
+import stylish from './src/stylish.js';
 
 const program = new Command();
 
 program
   .version('1.0.0')
-  .description('Generate a difference between two JSON/YAML files')
-  .argument('<filepath1>', 'path to first file')
-  .argument('<filepath2>', 'path to second file')
-  .action((filepath1, filepath2) => {
-    const diff = genDiff(filepath1, filepath2);
-    const result = formatDiff(diff); // Usar la función de formateo
-    console.log(result);
+  .argument('<file1>', 'first configuration file')
+  .argument('<file2>', 'second configuration file')
+  .option('-f, --format <type>', 'output format (default: stylish)', 'stylish')
+  .action((file1, file2, options) => {
+    const diff = genDiff(file1, file2);
+    const output = formatDiff(diff, options.format);
+    console.log(output);
   });
+
+const formatDiff = (diff, format) => {
+  switch (format) {
+  case 'stylish':
+    return stylish(diff);
+    // Otros formatos pueden ir aquí
+  default:
+    return `Error: El formato '${format}' no es válido. Por favor, use uno definido.`;
+  }
+};
 
 program.parse(process.argv);
