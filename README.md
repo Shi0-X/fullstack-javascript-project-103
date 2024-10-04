@@ -15,3 +15,5 @@ https://youtu.be/CLo3cl5BnNQ
 Se añade un fixture YAML y se desarrolla una función para detectar diferencias en archivos anidados. Además, se creó el formateador stylish, que muestra las diferencias en forma de árbol y se estableció como predeterminado en el ejecutable.
 https://youtu.be/Htr3Yjp2ZUE
 
+Se implementó el formateador plain y se añadió la capacidad de seleccionar el formato de salida, organizando los formateadores en módulos dentro del directorio formatters y gestionando la selección en formatters/index.js.
+https://youtu.be/QeKMgkNcJUI

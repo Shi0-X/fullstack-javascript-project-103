@@ -25,13 +25,16 @@ const stylish = (diff, depth = 1) => {
 };
 
 const formatValue = (value, depth) => {
+  if (value === null) {
+    return 'null'; // Manejar null
+  }
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     const formattedEntries = Object.entries(value)
       .map(([key, val]) => `${'    '.repeat(depth + 1)}${key}: ${formatValue(val, depth + 1)}`)
       .join('\n');
     return `{\n${formattedEntries}\n${'    '.repeat(depth)}}`;
   }
-  return value;
+  return value; // Para tipos primitivos como strings, números, booleans
 };
 
 // Función que añade llaves al inicio y al final
