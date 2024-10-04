@@ -17,3 +17,7 @@ https://youtu.be/Htr3Yjp2ZUE
 
 Se implementó el formateador plain y se añadió la capacidad de seleccionar el formato de salida, organizando los formateadores en módulos dentro del directorio formatters y gestionando la selección en formatters/index.js.
 https://youtu.be/QeKMgkNcJUI
+
+
+Implementación del formateador JSON 
+https://youtu.be/g-QjCO3BhPU
