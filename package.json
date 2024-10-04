@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node gendiff.js",
-    "test": "npx jest",
+    "test": "jest --coverage --coverageReporters lcov",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
     "prepush": "npx lint-staged"
