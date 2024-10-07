@@ -34,9 +34,6 @@
     "prettier": "^3.3.3",
     "simple-git-hooks": "^2.11.1"
   },
-  "jest": {
-    "testEnvironment": "node"
-  },
   "lint-staged": {
     "*.js": "npx eslint --fix"
   },
