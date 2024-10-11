@@ -1,6 +1,6 @@
 const formatNode = (node, depth) => {
   const key = node.key;
-  const indent = '  '.repeat(depth - 1); // Resta un nivel de profundidad
+  const indent = depth > 0 ? '  '.repeat(depth - 1) : ''; // Verifica si depth es mayor que 0
 
   switch (node.type) {
     case 'added':
@@ -26,12 +26,12 @@ const formatValue = (value, depth) => {
     const formattedEntries = Object.entries(value)
       .map(([key, val]) => `${'  '.repeat(depth)}${key}: ${formatValue(val, depth + 1)}`)
       .join('\n');
-    return `{\n${formattedEntries}\n${'  '.repeat(depth - 1)}}`; // Resta un nivel de profundidad
+    return `{\n${formattedEntries}\n${'  '.repeat(depth - 1)}}`;
   }
   return value;
 };
 
-const stylish = (diff, depth = 0) => {
+const stylish = (diff, depth = 1) => {
   const result = diff.map((child) => formatNode(child, depth)).join('\n');
   return result;
 };
