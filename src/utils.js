@@ -1,6 +1,6 @@
 const formatNode = (node, depth) => {
   const key = node.key;
-  const indent = '  '.repeat(depth) + '  '; // Agrega un espacio adicional
+  const indent = '  '.repeat(depth) + '    '; // Agrega un espacio adicional
 
   switch (node.type) {
     case 'added':
