@@ -1,6 +1,6 @@
 const formatNode = (node, depth) => {
   const key = node.key;
-  const indent = '  '.repeat(depth);
+  const indent = '  '.repeat(depth + 1); // Aumenta la indentación en 1 nivel
 
   switch (node.type) {
     case 'added':
@@ -24,9 +24,9 @@ const formatValue = (value, depth) => {
   }
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     const formattedEntries = Object.entries(value)
-      .map(([key, val]) => `${'  '.repeat(depth)}${key}: ${formatValue(val, depth + 1)}`)
+      .map(([key, val]) => `${'  '.repeat(depth + 1)}${key}: ${formatValue(val, depth + 1)}`)
       .join('\n');
-    return `{\n${formattedEntries}\n${'  '.repeat(depth - 1)}}`;
+    return `{\n${formattedEntries}\n${'  '.repeat(depth)}  }`;
   }
   return value;
 };
