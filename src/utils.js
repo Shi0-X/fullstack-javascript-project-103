@@ -1,6 +1,6 @@
 const formatNode = (node, depth) => {
   const key = node.key;
-  const indent = '  '.repeat(depth) + '    '; // Agrega un espacio adicional
+  const indent = '  '.repeat(depth) + '    '; 
 
   switch (node.type) {
     case 'added':
@@ -12,7 +12,7 @@ const formatNode = (node, depth) => {
     case 'unchanged':
       return `${indent}  ${key}: ${formatValue(node.value, depth + 1)}`;
     case 'nested':
-      return `${indent}  ${key}: {\n${stylish(node.children, depth + 1)}\n${indent}  }`;
+      return `${indent}    ${key}: {\n${stylish(node.children, depth + 1)}\n${indent}    }`;
     default:
       throw new Error(`Unknown node type: ${node.type}`);
   }
@@ -24,9 +24,9 @@ const formatValue = (value, depth) => {
   }
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     const formattedEntries = Object.entries(value)
-      .map(([key, val]) => `${'  '.repeat(depth) + '  '}${key}: ${formatValue(val, depth + 1)}`)
+      .map(([key, val]) => `${'  '.repeat(depth) + '    '}${key}: ${formatValue(val, depth + 1)}`)
       .join('\n');
-    return `{\n${formattedEntries}\n${'  '.repeat(depth)}  }`; // Agrega un espacio adicional
+    return `{\n${formattedEntries}\n${'  '.repeat(depth)}    }`;
   }
   return value;
 };
