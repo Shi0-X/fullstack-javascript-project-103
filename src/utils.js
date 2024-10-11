@@ -1,16 +1,16 @@
 const formatNode = (node, depth) => {
   const key = node.key;
-  const indent = depth > 0 ? '  '.repeat(depth - 1) : ''; // Verifica si depth es mayor que 0
+  const indent = '  '.repeat(depth);
 
   switch (node.type) {
     case 'added':
-      return `${indent}+ ${key}: ${formatValue(node.value, depth)}`;
+      return `${indent}+ ${key}: ${formatValue(node.value, depth + 1)}`;
     case 'deleted':
-      return `${indent}- ${key}: ${formatValue(node.value, depth)}`;
+      return `${indent}- ${key}: ${formatValue(node.value, depth + 1)}`;
     case 'changed':
-      return `${indent}- ${key}: ${formatValue(node.value1, depth)}\n${indent}+ ${key}: ${formatValue(node.value2, depth)}`;
+      return `${indent}- ${key}: ${formatValue(node.value1, depth + 1)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 1)}`;
     case 'unchanged':
-      return `${indent}  ${key}: ${formatValue(node.value, depth)}`;
+      return `${indent}  ${key}: ${formatValue(node.value, depth + 1)}`;
     case 'nested':
       return `${indent}  ${key}: {\n${stylish(node.children, depth + 1)}\n${indent}  }`;
     default:
@@ -31,7 +31,7 @@ const formatValue = (value, depth) => {
   return value;
 };
 
-const stylish = (diff, depth = 1) => {
+const stylish = (diff, depth = 0) => {
   const result = diff.map((child) => formatNode(child, depth)).join('\n');
   return result;
 };
