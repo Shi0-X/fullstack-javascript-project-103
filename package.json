@@ -2,10 +2,10 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "[![Actions Status](https://github.com/Shi0-X/fullstack-javascript-project-103/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Shi0-X/fullstack-javascript-project-103/actions)",
-  "main": "gendiff.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node gendiff.js",
+    "start": "gendiff",
     "test": "jest --coverage --coverageReporters lcov",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
@@ -32,6 +32,9 @@
     "npm-check-updates": "^16.14.20",
     "prettier": "^3.3.3",
     "simple-git-hooks": "^2.11.1"
+  },
+  "bin": {
+    "gendiff": "bin/gendiff.js"
   },
   "lint-staged": {
     "*.js": "npx eslint --fix"
