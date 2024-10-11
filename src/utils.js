@@ -1,18 +1,18 @@
 const formatNode = (node, depth) => {
   const key = node.key;
-  const indent = '  '.repeat(depth + 2); // Aumenta la indentación en 1 nivel
+  const indent = '  '.repeat(depth) + ' ';
 
   switch (node.type) {
     case 'added':
-      return `${indent}+ ${key}: ${formatValue(node.value, depth + 2)}`;
+      return `${indent}+ ${key}: ${formatValue(node.value, depth + 1)}`;
     case 'deleted':
-      return `${indent}- ${key}: ${formatValue(node.value, depth + 2)}`;
+      return `${indent}- ${key}: ${formatValue(node.value, depth + 1)}`;
     case 'changed':
-      return `${indent}- ${key}: ${formatValue(node.value1, depth + 2)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 2)}`;
+      return `${indent}- ${key}: ${formatValue(node.value1, depth + 1)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 1)}`;
     case 'unchanged':
-      return `${indent}  ${key}: ${formatValue(node.value, depth + 2)}`;
+      return `${indent}  ${key}: ${formatValue(node.value, depth + 1)}`;
     case 'nested':
-      return `${indent}  ${key}: {\n${stylish(node.children, depth + 2)}\n${indent}  }`;
+      return `${indent}  ${key}: {\n${stylish(node.children, depth + 1)}\n${indent}  }`;
     default:
       throw new Error(`Unknown node type: ${node.type}`);
   }
@@ -24,9 +24,9 @@ const formatValue = (value, depth) => {
   }
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     const formattedEntries = Object.entries(value)
-      .map(([key, val]) => `${'  '.repeat(depth + 3)}${key}: ${formatValue(val, depth + 3)}`)
+      .map(([key, val]) => `${'  '.repeat(depth) + ' '}${key}: ${formatValue(val, depth + 1)}`)
       .join('\n');
-    return `{\n${formattedEntries}\n${'  '.repeat(depth + 2)}}`;
+    return `{\n${formattedEntries}\n${'  '.repeat(depth)} }`;
   }
   return value;
 };
