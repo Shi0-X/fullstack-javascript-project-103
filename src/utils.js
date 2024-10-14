@@ -4,14 +4,14 @@ const specialKeys = ['wow', 'ops'];
 const groups = ['common', 'group2', 'group3'];
 
 const getIndent = (depth) => {
-  return '  '.repeat(depth) + '   '; // Ajusta la indentación aquí
+  return '  '.repeat(depth) + '     '; // Ajusta la indentación aquí
 };
 
 const formatValue = (value, depth) => {
   if (value === null) return 'null';
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     const formattedEntries = Object.entries(value)
-      .map(([key, val]) => `${getIndent(depth + 1)}${key}: ${formatValue(val, depth + 0)}`) //inferiores group 2 y 3
+      .map(([key, val]) => `${getIndent(depth + 0)}${key}: ${formatValue(val, depth + 0)}`) //inferiores group 2 y 3
       .join('\n');
     return `{\n${formattedEntries}\n${getIndent(depth)}}`;
   }
@@ -32,13 +32,13 @@ const formatNode = (node, depth) => {
     case 'unchanged':
       return `${indent} ${key}: ${formatValue(node.value, depth + 0)}`;
     case 'nested':
-      return `${indent} ${key}: {\n${node.children.map((child) => formatNode(child, depth + 0)).join('\n')}\n${indent} }`; //common y group 1
+      return `${indent} ${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent} }`; //common y group 1
     default:
       throw new Error(`Unknown node type: ${node.type}`);
   }
 };
 
-const stylish = (diff, depth = 2) => {
+const stylish = (diff, depth = 0) => {
   return diff.map((node) => formatNode(node, depth)).join('\n');
 };
 
