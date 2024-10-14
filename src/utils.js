@@ -28,7 +28,16 @@ const formatNode = (node, depth) => {
 };
 
 const formatValue = (value, depth) => {
-  // ...
+  if (value === null) {
+    return 'null';
+  }
+  if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+    const formattedEntries = Object.entries(value)
+      .map(([key, val]) => `${'  '.repeat(depth) + '    '}${key}: ${formatValue(val, depth + 1)}`)
+      .join('\n');
+    return `{\n${formattedEntries}\n${'  '.repeat(depth)}    }`;
+  }
+  return value;
 };
 
 const stylish = (diff, depth = 0) => {
