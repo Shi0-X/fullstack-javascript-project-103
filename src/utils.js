@@ -11,7 +11,7 @@ const formatValue = (value, depth) => {
   if (value === null) return 'null';
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     const formattedEntries = Object.entries(value)
-      .map(([key, val]) => `${getIndent(depth + 1)}${key}: ${formatValue(val, depth + 1)}`)
+      .map(([key, val]) => `${getIndent(depth + 1)}${key}: ${formatValue(val, depth + 0)}`)
       .join('\n');
     return `{\n${formattedEntries}\n${getIndent(depth)}}`;
   }
@@ -24,13 +24,13 @@ const formatNode = (node, depth) => {
 
   switch (node.type) {
     case 'added':
-      return `${indent}+ ${key}: ${formatValue(node.value, depth + 1)}`;
+      return `${indent}+ ${key}: ${formatValue(node.value, depth + 0)}`;
     case 'deleted':
-      return `${indent}- ${key}: ${formatValue(node.value, depth + 1)}`;
+      return `${indent}- ${key}: ${formatValue(node.value, depth + 0)}`;
     case 'changed':
-      return `${indent}- ${key}: ${formatValue(node.value1, depth + 1)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 1)}`;
+      return `${indent}- ${key}: ${formatValue(node.value1, depth + 0)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 0)}`;
     case 'unchanged':
-      return `${indent} ${key}: ${formatValue(node.value, depth + 1)}`;
+      return `${indent} ${key}: ${formatValue(node.value, depth + 0)}`;
     case 'nested':
       return `${indent} ${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent} }`;
     default:
