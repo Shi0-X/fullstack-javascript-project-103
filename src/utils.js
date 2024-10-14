@@ -26,9 +26,9 @@ const formatNode = (node, depth) => {
     case 'added':
       return `${indent}+ ${key}: ${formatValue(node.value, depth + 0)}`; //setting5 y group3
     case 'deleted':
-      return `${indent}- ${key}: ${formatValue(node.value, depth + 0)}`; //group 2
+      return `${indent}- ${key}: ${formatValue(node.value, depth + 2)}`; //group 2
     case 'changed':
-      return `${indent}- ${key}: ${formatValue(node.value1, depth + 0)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 0)}`; //group1 key:value
+      return `${indent}- ${key}: ${formatValue(node.value1, depth + 3)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 0)}`; //group1 key:value
     case 'unchanged':
       return `${indent} ${key}: ${formatValue(node.value, depth + 0)}`;
     case 'nested':
