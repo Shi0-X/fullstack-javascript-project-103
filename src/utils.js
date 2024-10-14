@@ -1,73 +1,42 @@
-const offsetKeys = ['key', 'key5'];
-const offsetParents = ['setting6'];
-const specialKeys = ['wow', 'ops'];
-const groups = ['common', 'group2', 'group3'];
+const OFFSET_VALUE = 'offset';
+const ADD_VALUE = 'added';
+const DELETED_VALUE = 'deleted';
+const UNCHANGED_VALUE = 'unchanged';
+const NESTED_VALUE = 'nested';
 
-const getIndent = (depth) => {
-  return '  '.repeat(depth) + '      ';
+const renderFunctions = {
+  [ADD_VALUE]: (node, depth) => `${getIndentation(depth)}+ ${node.key}: ${formatValue(node.value, depth)}`,
+  [DELETED_VALUE]: (node, depth) => `${getIndentation(depth)}- ${node.key}: ${formatValue(node.value, depth)}`,
+  [UNCHANGED_VALUE]: (node, depth) => `${getIndentation(depth)}  ${node.key}: ${formatValue(node.value, depth)}`,
+  [NESTED_VALUE]: (node, depth) => `${getIndentation(depth + 1)}${node.key}: {\n${node.children.map((child) => renderFunctions[child.type](child, depth + 1)).join('\n')}\n${getIndentation(depth + 1)}}`,
+  changed: (node, depth) => `${getIndentation(depth)}- ${node.key}: ${formatValue(node.value1, depth)}\n${getIndentation(depth)}+ ${node.key}: ${formatValue(node.value2, depth)}`,
+};
+
+const getIndentation = (depth, spacesCount = 4) => {
+  if (depth < 0) return '';
+  return ' '.repeat(depth * spacesCount);
 };
 
 const formatValue = (value, depth) => {
   if (value === null) return 'null';
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     const formattedEntries = Object.entries(value)
-      .map(([key, val]) => `${getIndent(depth + 1)}${key}: ${formatValue(val, depth + 0)}`)
+      .map(([key, val]) => `${getIndentation(depth + 1)}${key}: ${formatValue(val, depth + 1)}`)
       .join('\n');
-    return `{\n${formattedEntries}\n${getIndent(depth)}}`;
+    return `{\n${formattedEntries}\n${getIndentation(depth)}}`;
   }
   return value;
 };
 
-const formatNode = (node, depth) => {
-  const key = node.key;
-  const indent = getIndent(depth);
-  const isGroup = groups.includes(key);
+const formatNode = (node, depth) => renderFunctions[node.type](node, depth);
 
-  switch (node.type) {
-    case 'added':
-      return isGroup ? 
-        (node.children ? 
-          `${indent}${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent}}` 
-          : 
-          `${indent}+ ${key}: ${formatValue(node.value, depth + 0)}`) 
-        : 
-        `${indent}+ ${key}: ${formatValue(node.value, depth + 1)}`;
-    case 'deleted':
-      return isGroup ? 
-        (node.children ? 
-          `${indent}${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent}}` 
-          : 
-          `${indent}- ${key}: ${formatValue(node.value, depth + 1)}`) 
-        : 
-        `${indent}- ${key}: ${formatValue(node.value, depth + 1)}`;
-    case 'changed':
-      return isGroup ? 
-        (node.children ? 
-          `${indent}${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent}}` 
-          : 
-          `${indent}- ${key}: ${formatValue(node.value1, depth + 2)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 1)}`) 
-        : 
-        `${indent}- ${key}: ${formatValue(node.value1, depth + 2)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 1)}`;
-    case 'unchanged':
-      return isGroup ? 
-        (node.children ? 
-          `${indent}${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent}}` 
-          : 
-          `${indent} ${key}: ${formatValue(node.value, depth + 1)}`) 
-        : 
-        `${indent} ${key}: ${formatValue(node.value, depth + 1)}`;
-    case 'nested':
-      return node.children ? 
-        `${indent} ${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent} }` 
-        : 
-        `${indent} ${key}: ${formatValue(node.value, depth + 1)}`;
-    default:
-      throw new Error(`Unknown node type: ${node.type}`);
-  }
+const stylish = (diff) => {
+  return diff.map((node) => formatNode(node, 0)).join('\n');
 };
 
-const stylish = (diff, depth = 0) => {
-  return diff.map((node) => formatNode(node, depth)).join('\n');
+const stylishWithBraces = (diff) => {
+  const innerOutput = stylish(diff);
+  return `{\n${innerOutput}\n}`;
 };
 
-export { formatNode, formatValue, stylish };
+export { formatNode, formatValue, stylish, stylishWithBraces };
