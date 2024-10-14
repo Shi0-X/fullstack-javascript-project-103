@@ -31,36 +31,36 @@ const formatNode = (node, depth) => {
           : 
           `${indent}+ ${key}: ${formatValue(node.value, depth + 0)}`) 
         : 
-        `${indent}+ ${key}: ${formatValue(node.value, depth + 0)}`;
+        `${indent}+ ${key}: ${formatValue(node.value, depth + 1)}`;
     case 'deleted':
       return isGroup ? 
         (node.children ? 
           `${indent}${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent}}` 
           : 
-          `${indent}- ${key}: ${formatValue(node.value, depth + 2)}`) 
+          `${indent}- ${key}: ${formatValue(node.value, depth + 1)}`) 
         : 
-        `${indent}- ${key}: ${formatValue(node.value, depth + 2)}`;
+        `${indent}- ${key}: ${formatValue(node.value, depth + 1)}`;
     case 'changed':
       return isGroup ? 
         (node.children ? 
           `${indent}${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent}}` 
           : 
-          `${indent}- ${key}: ${formatValue(node.value1, depth + 3)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 0)}`) 
+          `${indent}- ${key}: ${formatValue(node.value1, depth + 2)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 1)}`) 
         : 
-        `${indent}- ${key}: ${formatValue(node.value1, depth + 3)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 0)}`;
+        `${indent}- ${key}: ${formatValue(node.value1, depth + 2)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 1)}`;
     case 'unchanged':
       return isGroup ? 
         (node.children ? 
           `${indent}${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent}}` 
           : 
-          `${indent} ${key}: ${formatValue(node.value, depth + 0)}`) 
+          `${indent} ${key}: ${formatValue(node.value, depth + 1)}`) 
         : 
-        `${indent} ${key}: ${formatValue(node.value, depth + 0)}`;
+        `${indent} ${key}: ${formatValue(node.value, depth + 1)}`;
     case 'nested':
       return node.children ? 
         `${indent} ${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent} }` 
         : 
-        `${indent} ${key}: ${formatValue(node.value, depth + 0)}`;
+        `${indent} ${key}: ${formatValue(node.value, depth + 1)}`;
     default:
       throw new Error(`Unknown node type: ${node.type}`);
   }
