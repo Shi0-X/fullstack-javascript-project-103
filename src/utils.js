@@ -26,7 +26,7 @@ const formatValue = (value, depth) => {
     const formattedEntries = Object.entries(value)
       .map(([key, val]) => {
         const specialKeys = ['key', 'key5', 'wow', 'abc', 'deep', 'fee', 'bar', 'isNested', 'ops'];
-        const indentAdditional = specialKeys.includes(key) ? '  ' : '';
+        const indentAdditional = specialKeys.includes(key) ? '    ' : '';
         return `${'  '.repeat(depth) + '    '}${indentAdditional}${key}: ${formatValue(val, depth + 1)}`;
       })
       .join('\n');
