@@ -4,14 +4,14 @@ const specialKeys = ['wow', 'ops'];
 const groups = ['common', 'group2', 'group3'];
 
 const getIndent = (depth) => {
-  return '  '.repeat(depth) + '      '; // Ajusta la indentación aquí
+  return '  '.repeat(depth) + '      ';
 };
 
 const formatValue = (value, depth) => {
   if (value === null) return 'null';
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     const formattedEntries = Object.entries(value)
-      .map(([key, val]) => `${getIndent(depth + 0)}${key}: ${formatValue(val, depth + 0)}`) //inferiores group 2 y 3
+      .map(([key, val]) => `${getIndent(depth + 1)}${key}: ${formatValue(val, depth + 0)}`)
       .join('\n');
     return `{\n${formattedEntries}\n${getIndent(depth)}}`;
   }
@@ -21,18 +21,46 @@ const formatValue = (value, depth) => {
 const formatNode = (node, depth) => {
   const key = node.key;
   const indent = getIndent(depth);
+  const isGroup = groups.includes(key);
 
   switch (node.type) {
     case 'added':
-      return `${indent}+ ${key}: ${formatValue(node.value, depth + 0)}`; //setting5 y group3
+      return isGroup ? 
+        (node.children ? 
+          `${indent}${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent}}` 
+          : 
+          `${indent}+ ${key}: ${formatValue(node.value, depth + 0)}`) 
+        : 
+        `${indent}+ ${key}: ${formatValue(node.value, depth + 0)}`;
     case 'deleted':
-      return `${indent}- ${key}: ${formatValue(node.value, depth + 2)}`; //group 2
+      return isGroup ? 
+        (node.children ? 
+          `${indent}${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent}}` 
+          : 
+          `${indent}- ${key}: ${formatValue(node.value, depth + 2)}`) 
+        : 
+        `${indent}- ${key}: ${formatValue(node.value, depth + 2)}`;
     case 'changed':
-      return `${indent}- ${key}: ${formatValue(node.value1, depth + 3)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 0)}`; //group1 key:value
+      return isGroup ? 
+        (node.children ? 
+          `${indent}${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent}}` 
+          : 
+          `${indent}- ${key}: ${formatValue(node.value1, depth + 3)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 0)}`) 
+        : 
+        `${indent}- ${key}: ${formatValue(node.value1, depth + 3)}\n${indent}+ ${key}: ${formatValue(node.value2, depth + 0)}`;
     case 'unchanged':
-      return `${indent} ${key}: ${formatValue(node.value, depth + 0)}`;
+      return isGroup ? 
+        (node.children ? 
+          `${indent}${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent}}` 
+          : 
+          `${indent} ${key}: ${formatValue(node.value, depth + 0)}`) 
+        : 
+        `${indent} ${key}: ${formatValue(node.value, depth + 0)}`;
     case 'nested':
-      return `${indent} ${key}: {\n${node.children.map((child) => formatNode(child, depth + 0)).join('\n')}\n${indent} }`; //common y group 1
+      return node.children ? 
+        `${indent} ${key}: {\n${node.children.map((child) => formatNode(child, depth + 1)).join('\n')}\n${indent} }` 
+        : 
+        `${indent} ${key}: ${formatValue(node.value, depth + 0)}`;
     default:
       throw new Error(`Unknown node type: ${node.type}`);
   }
