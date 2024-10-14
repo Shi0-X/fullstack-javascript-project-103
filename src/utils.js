@@ -2,34 +2,35 @@ const formatNode = (node, depth) => {
   const key = node.key;
   const indent = '  '.repeat(depth); 
   const specialKeys = ['wow', 'key', 'ops'];
+  const groups = ['common', 'group2', 'group3'];
 
   switch (node.type) {
     case 'added':
-      return key === 'common' ? 
+      return groups.includes(key) ? 
         `${indent}    + ${key}: ${formatValue(node.value, depth + 1)}` : 
         (specialKeys.includes(key) ? 
           `${indent}        + ${key}: ${formatValue(node.value, depth + 1)}` : 
           `${indent}    + ${key}: ${formatValue(node.value, depth + 1)}`);
     case 'deleted':
-      return key === 'common' ? 
+      return groups.includes(key) ? 
         `${indent}    - ${key}: ${formatValue(node.value, depth + 1)}` : 
         (specialKeys.includes(key) ? 
           `${indent}        - ${key}: ${formatValue(node.value, depth + 1)}` : 
           `${indent}    - ${key}: ${formatValue(node.value, depth + 1)}`);
     case 'changed':
-      return key === 'common' ? 
+      return groups.includes(key) ? 
         `${indent}    - ${key}: ${formatValue(node.value1, depth + 1)}\n${indent}    + ${key}: ${formatValue(node.value2, depth + 1)}` : 
         (specialKeys.includes(key) ? 
           `${indent}        - ${key}: ${formatValue(node.value1, depth + 1)}\n${indent}        + ${key}: ${formatValue(node.value2, depth + 1)}` : 
           `${indent}    - ${key}: ${formatValue(node.value1, depth + 1)}\n${indent}    + ${key}: ${formatValue(node.value2, depth + 1)}`);
     case 'unchanged':
-      return key === 'common' ? 
+      return groups.includes(key) ? 
         `${indent}    ${key}: ${formatValue(node.value, depth + 1)}` : 
         (specialKeys.includes(key) ? 
           `${indent}          ${key}: ${formatValue(node.value, depth + 1)}` : 
           `${indent}    ${key}: ${formatValue(node.value, depth + 1)}`);
     case 'nested':
-      return key === 'common' ? 
+      return groups.includes(key) ? 
         `${indent}    ${key}: {\n${stylish(node.children, depth + 1)}\n${indent}    }` : 
         (specialKeys.includes(key) ? 
           `${indent}        ${key}: {\n${stylish(node.children, depth + 1)}\n${indent}        }` : 
