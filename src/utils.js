@@ -38,7 +38,7 @@ const formatNode = (node, depth) => {
   }
 };
 
-const stylish = (diff, depth = 1) => {
+const stylish = (diff, depth = 2) => {
   return diff.map((node) => formatNode(node, depth)).join('\n');
 };
 
