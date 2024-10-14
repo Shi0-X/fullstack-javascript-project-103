@@ -24,11 +24,7 @@ const formatValue = (value, depth) => {
   }
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     const formattedEntries = Object.entries(value)
-      .map(([key, val]) => {
-        const specialKeys = ['key', 'key5', 'wow', 'abc', 'deep', 'fee', 'bar', 'isNested', 'ops'];
-        const indentAdditional = specialKeys.includes(key) ? '  ' : '';
-        return `${'  '.repeat(depth) + '    '}${indentAdditional}${key}: ${formatValue(val, depth + 1)}`;
-      })
+      .map(([key, val]) => `${'  '.repeat(depth) + '    '}${key}: ${formatValue(val, depth + 1)}`)
       .join('\n');
     return `{\n${formattedEntries}\n${'  '.repeat(depth)}    }`;
   }
