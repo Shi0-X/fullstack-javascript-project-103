@@ -1,22 +1,23 @@
+const offsetKeys = [
+  'setting1', 
+  'key', 
+  'key5', 
+  'setting6', 
+  'doge', 
+  'foo', 
+  'abc', 
+  'deep', 
+  'id', 
+  'fee', 
+  'bar', 
+  'isNested'
+];
+
 const formatNode = (node, depth) => {
   const key = node.key;
   const indent = '  '.repeat(depth); 
   const specialKeys = ['wow', 'key', 'ops'];
   const groups = ['common', 'group2', 'group3'];
-  const offsetKeys = [
-    'setting1', 
-    'key', 
-    'key5', 
-    'setting6', 
-    'doge', 
-    'foo', 
-    'abc', 
-    'deep', 
-    'id', 
-    'fee', 
-    'bar', 
-    'isNested'
-  ];
 
   switch (node.type) {
     case 'added':
@@ -27,7 +28,7 @@ const formatNode = (node, depth) => {
           (specialKeys.includes(key) ? 
             `${indent}        + ${key}: ${formatValue(node.value, depth + 1)}` : 
             (offsetKeys.includes(key) ? 
-              `${indent}      + ${key}: ${formatValue(node.value, depth + 1)}` : 
+              `${indent}        + ${key}: ${formatValue(node.value, depth + 1)}` : 
               `${indent}    + ${key}: ${formatValue(node.value, depth + 1)}`)));
     case 'deleted':
       return key === 'common' ? 
@@ -37,7 +38,7 @@ const formatNode = (node, depth) => {
           (specialKeys.includes(key) ? 
             `${indent}        - ${key}: ${formatValue(node.value, depth + 1)}` : 
             (offsetKeys.includes(key) ? 
-              `${indent}      - ${key}: ${formatValue(node.value, depth + 1)}` : 
+              `${indent}        - ${key}: ${formatValue(node.value, depth + 1)}` : 
               `${indent}    - ${key}: ${formatValue(node.value, depth + 1)}`)));
               case 'changed':
                 return key === 'common' ? 
@@ -47,7 +48,7 @@ const formatNode = (node, depth) => {
                     (specialKeys.includes(key) ? 
                       `${indent}        - ${key}: ${formatValue(node.value1, depth + 1)}\n${indent}        + ${key}: ${formatValue(node.value2, depth + 1)}` : 
                       (offsetKeys.includes(key) ? 
-                        `${indent}      - ${key}: ${formatValue(node.value1, depth + 1)}\n${indent}      + ${key}: ${formatValue(node.value2, depth + 1)}` : 
+                        `${indent}        - ${key}: ${formatValue(node.value1, depth + 1)}\n${indent}        + ${key}: ${formatValue(node.value2, depth + 1)}` : 
                         `${indent}    - ${key}: ${formatValue(node.value1, depth + 1)}\n${indent}    + ${key}: ${formatValue(node.value2, depth + 1)}`)));
               case 'unchanged':
                 return key === 'common' ? 
@@ -57,7 +58,7 @@ const formatNode = (node, depth) => {
                     (specialKeys.includes(key) ? 
                       `${indent}          ${key}: ${formatValue(node.value, depth + 1)}` : 
                       (offsetKeys.includes(key) ? 
-                        `${indent}      ${key}: ${formatValue(node.value, depth + 1)}` : 
+                        `${indent}        ${key}: ${formatValue(node.value, depth + 1)}` : 
                         `${indent}    ${key}: ${formatValue(node.value, depth + 1)}`)));
               case 'nested':
                 return key === 'common' ? 
@@ -67,7 +68,7 @@ const formatNode = (node, depth) => {
                     (specialKeys.includes(key) ? 
                       `${indent}        ${key}: {\n${stylish(node.children, depth + 1)}\n${indent}        }` : 
                       (offsetKeys.includes(key) ? 
-                        `${indent}      ${key}: {\n${stylish(node.children, depth + 1)}\n${indent}      }` : 
+                        `${indent}        ${key}: {\n${stylish(node.children, depth + 1)}\n${indent}        }` : 
                         `${indent}    ${key}: {\n${stylish(node.children, depth + 1)}\n${indent}    }`)));
               default:
                 throw new Error(`Unknown node type: ${node.type}`);
