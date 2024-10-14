@@ -4,7 +4,7 @@ const specialKeys = ['wow', 'ops'];
 const groups = ['common', 'group2', 'group3'];
 
 const getIndent = (depth) => {
-  return '  '.repeat(depth) + '     '; // Ajusta la indentación aquí
+  return '  '.repeat(depth) + '      '; // Ajusta la indentación aquí
 };
 
 const formatValue = (value, depth) => {
