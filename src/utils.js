@@ -32,7 +32,7 @@ const formatNode = (node, depth) => {
     case 'unchanged':
       return `${indent} ${key}: ${formatValue(node.value, depth + 0)}`;
     case 'nested':
-      return `${indent} ${key}: {\n${node.children.map((child) => formatNode(child, depth + 2)).join('\n')}\n${indent} }`; //common y group 1
+      return `${indent} ${key}: {\n${node.children.map((child) => formatNode(child, depth + 0)).join('\n')}\n${indent} }`; //common y group 1
     default:
       throw new Error(`Unknown node type: ${node.type}`);
   }
