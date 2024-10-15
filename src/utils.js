@@ -13,15 +13,14 @@ const renderFunctions = {
 };
 
 const getIndentation = (depth, spacesCount = 4) => {
-  if (depth < 0) return '';
-  return ' '.repeat(Math.min(depth, 0) * spacesCount);
+  return ' '.repeat(depth * spacesCount);
 };
 
 const formatValue = (value, depth) => {
   if (value === null) return 'null';
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     const formattedEntries = Object.entries(value)
-      .map(([key, val]) => `${getIndentation(depth)}  ${key}: ${formatValue(val, depth + 1)}`)
+      .map(([key, val]) => `${getIndentation(depth + 1)}${key}: ${formatValue(val, depth + 1)}`)
       .join('\n');
     return `{\n${formattedEntries}\n${getIndentation(depth)}}`;
   }
