@@ -8,22 +8,22 @@ const renderFunctions = {
   [ADD_VALUE]: (node, depth) => `${getIndentation(depth)} + ${node.key}: ${formatValue(node.value, depth)}`,
   [DELETED_VALUE]: (node, depth) => `${getIndentation(depth)} - ${node.key}: ${formatValue(node.value, depth)}`,
   [UNCHANGED_VALUE]: (node, depth) => `${getIndentation(depth)}   ${node.key}: ${formatValue(node.value, depth)}`,
-  [NESTED_VALUE]: (node, depth) => `${getIndentation(depth + 1)}${node.key}: {\n${node.children.map((child) => renderFunctions[child.type](child, depth + 2)).join('\n')}\n${getIndentation(depth + 1)}}`,
+  [NESTED_VALUE]: (node, depth) => `${getIndentation(depth)}${node.key}: {\n${node.children.map((child) => renderFunctions[child.type](child, depth + 1)).join('\n')}\n${getIndentation(depth)}}`,
   changed: (node, depth) => `${getIndentation(depth)} - ${node.key}: ${formatValue(node.value1, depth)}\n${getIndentation(depth)} + ${node.key}: ${formatValue(node.value2, depth)}`,
 };
 
 const getIndentation = (depth, spacesCount = 4) => {
   if (depth < 0) return '';
-  return ' '.repeat(depth * spacesCount);
+  return ' '.repeat(Math.min(depth, 0) * spacesCount);
 };
 
 const formatValue = (value, depth) => {
   if (value === null) return 'null';
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     const formattedEntries = Object.entries(value)
-      .map(([key, val]) => `${getIndentation(depth + 2)}${key}: ${formatValue(val, depth + 2)}`)
+      .map(([key, val]) => `${getIndentation(depth)}  ${key}: ${formatValue(val, depth + 1)}`)
       .join('\n');
-    return `{\n${formattedEntries}\n${getIndentation(depth + 1)}}`;
+    return `{\n${formattedEntries}\n${getIndentation(depth)}}`;
   }
   return value;
 };
