@@ -5,11 +5,11 @@ const UNCHANGED_VALUE = 'unchanged';
 const NESTED_VALUE = 'nested';
 
 const renderFunctions = {
-  [ADD_VALUE]: (node, depth) => `${getIndentation(depth)}+ ${node.key}: ${formatValue(node.value, depth)}`,
-  [DELETED_VALUE]: (node, depth) => `${getIndentation(depth)}- ${node.key}: ${formatValue(node.value, depth)}`,
-  [UNCHANGED_VALUE]: (node, depth) => `${getIndentation(depth)}  ${node.key}: ${formatValue(node.value, depth)}`,
-  [NESTED_VALUE]: (node, depth) => `${getIndentation(depth + 1)}${node.key}: {\n${node.children.map((child) => renderFunctions[child.type](child, depth + 1)).join('\n')}\n${getIndentation(depth + 1)}}`,
-  changed: (node, depth) => `${getIndentation(depth)}- ${node.key}: ${formatValue(node.value1, depth)}\n${getIndentation(depth)}+ ${node.key}: ${formatValue(node.value2, depth)}`,
+  [ADD_VALUE]: (node, depth) => `${getIndentation(depth)} + ${node.key}: ${formatValue(node.value, depth)}`,
+  [DELETED_VALUE]: (node, depth) => `${getIndentation(depth)} - ${node.key}: ${formatValue(node.value, depth)}`,
+  [UNCHANGED_VALUE]: (node, depth) => `${getIndentation(depth)}   ${node.key}: ${formatValue(node.value, depth)}`,
+  [NESTED_VALUE]: (node, depth) => `${getIndentation(depth + 1)}${node.key}: {\n${node.children.map((child) => renderFunctions[child.type](child, depth + 2)).join('\n')}\n${getIndentation(depth + 1)}}`,
+  changed: (node, depth) => `${getIndentation(depth)} - ${node.key}: ${formatValue(node.value1, depth)}\n${getIndentation(depth)} + ${node.key}: ${formatValue(node.value2, depth)}`,
 };
 
 const getIndentation = (depth, spacesCount = 4) => {
@@ -21,9 +21,9 @@ const formatValue = (value, depth) => {
   if (value === null) return 'null';
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     const formattedEntries = Object.entries(value)
-      .map(([key, val]) => `${getIndentation(depth + 1)}${key}: ${formatValue(val, depth + 1)}`)
+      .map(([key, val]) => `${getIndentation(depth + 2)}${key}: ${formatValue(val, depth + 2)}`)
       .join('\n');
-    return `{\n${formattedEntries}\n${getIndentation(depth)}}`;
+    return `{\n${formattedEntries}\n${getIndentation(depth + 1)}}`;
   }
   return value;
 };
