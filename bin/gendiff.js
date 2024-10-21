@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Command } from 'commander';
 import genDiff from '../src/index.js'; // Importando genDiff desde src
 
