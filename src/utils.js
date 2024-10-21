@@ -1,36 +1,62 @@
-const OFFSET_VALUE = 'offset';
+import _ from 'lodash';
+
 const ADD_VALUE = 'added';
 const DELETED_VALUE = 'deleted';
 const UNCHANGED_VALUE = 'unchanged';
 const NESTED_VALUE = 'nested';
+const CHANGED_VALUE = 'changed';
+const ROOT_VALUE = 'root';
 
 const renderFunctions = {
-  [ADD_VALUE]: (node, depth) => `${getIndentation(depth)} + ${node.key}: ${formatValue(node.value, depth)}`,
-  [DELETED_VALUE]: (node, depth) => `${getIndentation(depth)} - ${node.key}: ${formatValue(node.value, depth)}`,
-  [UNCHANGED_VALUE]: (node, depth) => `${getIndentation(depth)}   ${node.key}: ${formatValue(node.value, depth)}`,
-  [NESTED_VALUE]: (node, depth) => `${getIndentation(depth)}${node.key}: {\n${node.children.map((child) => renderFunctions[child.type](child, depth + 1)).join('\n')}\n${getIndentation(depth)}}`,
-  changed: (node, depth) => `${getIndentation(depth)} - ${node.key}: ${formatValue(node.value1, depth)}\n${getIndentation(depth)} + ${node.key}: ${formatValue(node.value2, depth)}`,
+  [ROOT_VALUE]: ({ children }, depth, iterate) => {
+    const renderedChildren = children.flatMap((child) =>
+      iterate(child, depth + 1)
+    );
+    return `{\n${renderedChildren.join('\n')}\n}`;
+  },
+
+  [NESTED_VALUE]: ({ key, children }, depth, iterate) => {
+    const nestedChildren = children.flatMap((child) =>
+      iterate(child, depth + 1)
+    );
+    return `${getIndentation(depth)}  ${key}: {\n${nestedChildren.join('\n')}\n${getIndentation(depth)}  }`;
+  },
+
+  [ADD_VALUE]: (node, depth) =>
+    `${getIndentation(depth)}+ ${node.key}: ${formatValue(node.value, depth, renderFunctions)}`,
+
+  [DELETED_VALUE]: (node, depth) =>
+    `${getIndentation(depth)}- ${node.key}: ${formatValue(node.value, depth, renderFunctions)}`,
+
+  [UNCHANGED_VALUE]: (node, depth) =>
+    `${getIndentation(depth)}  ${node.key}: ${formatValue(node.value, depth, renderFunctions)}`,
+
+  [CHANGED_VALUE]: (node, depth) => {
+    const { key, value1, value2 } = node;
+    const formattedValue1 = `${getIndentation(depth)}- ${key}: ${formatValue(value1, depth, renderFunctions)}`;
+    const formattedValue2 = `${getIndentation(depth)}+ ${key}: ${formatValue(value2, depth, renderFunctions)}`;
+    return [formattedValue1, formattedValue2].join('\n');
+  },
 };
 
-const getIndentation = (depth, spacesCount = 4) => {
-  return ' '.repeat(depth * spacesCount);
+const getIndentation = (depth, spacesCount = 4) =>
+  ' '.repeat(depth * spacesCount - 2);
+
+const formatValue = (data, depth, renderFunctions) => {
+  if (!_.isObject(data)) return String(data);
+
+  const entries = Object.entries(data).map(([key, value]) =>
+    renderFunctions[UNCHANGED_VALUE]({ key, value }, depth + 1)
+  );
+
+  return `{\n${entries.join('\n')}\n${getIndentation(depth)}  }`;
 };
 
-const formatValue = (value, depth) => {
-  if (value === null) return 'null';
-  if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-    const formattedEntries = Object.entries(value)
-      .map(([key, val]) => `${getIndentation(depth + 1)}${key}: ${formatValue(val, depth + 1)}`)
-      .join('\n');
-    return `{\n${formattedEntries}\n${getIndentation(depth)}}`;
-  }
-  return value;
-};
-
-const formatNode = (node, depth) => renderFunctions[node.type](node, depth);
+const formatNode = (node, depth) =>
+  renderFunctions[node.type](node, depth, formatNode);
 
 const stylish = (diff) => {
-  return diff.map((node) => formatNode(node, 0)).join('\n');
+  return formatNode(diff, 0);
 };
 
 const stylishWithBraces = (diff) => {

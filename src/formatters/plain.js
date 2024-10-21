@@ -1,35 +1,48 @@
-// formatters/plain.js
+import _ from 'lodash';
+
+const ADD_VALUE = 'added';
+const DELETED_VALUE = 'deleted';
+const UNCHANGED_VALUE = 'unchanged';
+const NESTED_VALUE = 'nested';
+const CHANGED_VALUE = 'changed';
+const ROOT_VALUE = 'root';
+
+const buildPropertyPath = (property, ancestors) => {
+  return [...ancestors, property].join('.');
+};
 
 const formatValue = (value) => {
-  if (value === null) {
-    return null;
-  }
-  if (typeof value === 'object' && value !== null) {
-    return '[complex value]';
-  }
-  return typeof value === 'string' ? `'${value}'` : value;
+  if (value === null) return value;
+  if (_.isObject(value)) return '[complex value]';
+  return typeof value === 'string' ? `'${value}'` : String(value);
 };
 
-const formatNode = (node, parent) => {
-  const propertyPath = parent ? `${parent}.${node.key}` : node.key;
+const nodeHandlers = {
+  [ADD_VALUE]: (node, path) => {
+    return `Property '${buildPropertyPath(node.key, path)}' was added with value: ${formatValue(node.value)}`;
+  },
 
-  const formatters = {
-    added: () => `Property '${propertyPath}' was added with value: ${formatValue(node.value)}`,
-    deleted: () => `Property '${propertyPath}' was removed`,
-    changed: () => `Property '${propertyPath}' was updated. From ${formatValue(node.value1)} to ${formatValue(node.value2)}`,
-    nested: () => formatNodes(node.children, propertyPath),
-    unchanged: () => [],
-  };
+  [CHANGED_VALUE]: ({ key, value1, value2 }, path) => {
+    const propertyPath = buildPropertyPath(key, path);
+    return `Property '${propertyPath}' was updated. From ${formatValue(value1)} to ${formatValue(value2)}`;
+  },
 
-  return formatters[node.type]();
-};
+  [DELETED_VALUE]: (node, path) =>
+    `Property '${buildPropertyPath(node.key, path)}' was removed`,
 
-const formatNodes = (nodes, parent) => {
-  return nodes.flatMap((node) => formatNode(node, parent)).join('\n');
+  [NESTED_VALUE]: ({ key, children }, path, traverse) =>
+    children.flatMap((child) => traverse(child, [...path, key])),
+
+  [ROOT_VALUE]: ({ children }, path, traverse) =>
+    children.flatMap((child) => traverse(child, path)),
+
+  [UNCHANGED_VALUE]: () => [],
 };
 
 const plain = (diff) => {
-  return formatNodes(diff);
+  const traverse = (node, currentPath) =>
+    nodeHandlers[node.type](node, currentPath, traverse);
+  return traverse(diff, []).join('\n');
 };
 
 export default plain;

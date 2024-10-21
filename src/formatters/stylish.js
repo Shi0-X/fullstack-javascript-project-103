@@ -2,7 +2,7 @@ import { stylish, formatValue } from '../utils.js';
 
 const stylishWithBraces = (diff) => {
   const innerOutput = stylish(diff);
-  return `{\n${innerOutput}\n}`;
+  return innerOutput;
 };
 
 export default stylishWithBraces;

@@ -58,7 +58,10 @@ const stylishWithBraces = (diff) => {
 const genDiff = (file1Path, file2Path, format = 'stylish') => {
   const data1 = parseFile(file1Path);
   const data2 = parseFile(file2Path);
-  const diff = buildDiff(data1, data2);
+  const diff = {
+    type: 'root',
+    children: buildDiff(data1, data2),
+  };
 
   return formatDiff(diff, format);
 };
