@@ -1,25 +1,25 @@
-import genDiff from '../src/index.js'; // Asegúrate de que esta importación sea correcta
-import getFixturePath from '../src/getFixturePath.js'; // Importar correctamente la función
-import jsonResult from '../__fixtures__/jsonResult.js';
+import fs from 'fs';
+import getPath from '../src/getFixturePath.js';
+import genDiff from '../src/index.js';
 
-const testDiffFunc = (format) => {
-  const file1 = getFixturePath(`file1.${format}`);
-  const file2 = getFixturePath(`file2.${format}`);
-  const result = genDiff(file1, file2); // Llamamos sin formato para usar el predeterminado
+const stylishResult = fs.readFileSync(getPath('stylish-result.txt'), 'utf8');
+const plainResult = fs.readFileSync(getPath('plain-result.txt'), 'utf8');
+const jsonResult = JSON.parse(fs.readFileSync(getPath('json-result.json'), 'utf8'));
 
-  // Asegúrate de que `jsonResult` y el resultado de la función `genDiff` tengan una estructura comparable
-  const normalizedResult = { type: 'root', children: result };
-
-  // Comparar el resultado normalizado con el resultado esperado
-  expect(normalizedResult).toEqual(jsonResult);
-};
-
-// Prueba para archivos JSON
-test('should return correct diff for two JSON files', () => {
-  testDiffFunc('json');
+test('Format for stylish Result - YAML File', () => {
+  const filepath1 = getPath('file1-y.yaml');
+  const filepath2 = getPath('file2-y.yaml');
+  expect(genDiff(filepath1, filepath2, 'stylish')).toBe(stylishResult);
 });
 
-// Prueba para archivos YAML
-test('should return correct diff for two YAML files', () => {
-  testDiffFunc('yml');
+test('Format for plain Result - YAML File', () => {
+  const filepath1 = getPath('file1-y.yaml');
+  const filepath2 = getPath('file2-y.yaml');
+  expect(genDiff(filepath1, filepath2, 'plain')).toBe(plainResult);
+});
+
+test('Format for JSON Result - JSON File', () => {
+  const filepath1 = getPath('file1.json');
+  const filepath2 = getPath('file2.json');
+  expect(JSON.parse(genDiff(filepath1, filepath2, 'json'))).toEqual(jsonResult);
 });
