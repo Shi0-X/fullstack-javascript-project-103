@@ -28,20 +28,20 @@ const nodeHandlers = {
     const propertyPath = buildPropertyPath(node.key, path);
     return `Property '${propertyPath}' was removed`;
   }),
-  [NESTED_VALUE]: (({ key, children }, path, traverse) => 
+  [NESTED_VALUE]: (({ key, children }, path, traverse) =>
     children.flatMap((child) => traverse(child, [...path, key]))
   ),
-  [ROOT_VALUE]: (({ children }, path, traverse) => 
+  [ROOT_VALUE]: (({ children }, path, traverse) =>
     children.flatMap((child) => traverse(child, path))
   ),
   [UNCHANGED_VALUE]: (() => []),
 };
 
-const plain = (diff) => {
-  const traverse = ((node, currentPath) => 
+const plain = ((diff) => {
+  const traverse = ((node, currentPath) =>
     nodeHandlers[node.type](node, currentPath, traverse)
   );
   return traverse(diff, []).join('\n');
-};
+});
 
 export default plain;
