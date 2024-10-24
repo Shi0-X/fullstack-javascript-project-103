@@ -1,5 +1,5 @@
-import path from 'path';
 import getFixturePath from '../src/getFixturePath.js';
+import path from 'path';
 
 test('getFixturePath should return the correct path', () => {
   const filename = 'file1.json';
