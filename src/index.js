@@ -26,16 +26,17 @@ const parseFile = (filePath) => {
   return null;
 };
 
-// Reemplazamos el sort con un enfoque basado en reduce
+// Función recursiva para insertar claves en orden
+const insertSorted = (acc, key) => {
+  if (acc.length === 0 || acc[0] >= key) {
+    return [key, ...acc];
+  }
+  return [acc[0], ...insertSorted(acc.slice(1), key)];
+};
+
 const sortedKeys = (data1, data2) => {
   const keys = [...new Set([...Object.keys(data1), ...Object.keys(data2)])];
-  return keys.reduce((acc, key) => {
-    let i = 0;
-    while (i < acc.length && acc[i] < key) {
-      i += 1;
-    }
-    return [...acc.slice(0, i), key, ...acc.slice(i)];
-  }, []);
+  return keys.reduce((acc, key) => insertSorted(acc, key), []);
 };
 
 const buildDiff = (data1, data2) => {
