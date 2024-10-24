@@ -15,8 +15,8 @@ const getIndentation = (depth, spacesCount = 4) => ' '.repeat(depth * spacesCoun
 const formatValue = (data, depth, renderFns) => {
   if (!_.isObject(data)) return String(data);
 
-  const entries = Object.entries(data).map(([key, value]) => 
-    renderFns[UNCHANGED_VALUE]({ key, value }, depth + 1)// Asegúrate de que no haya salto de línea
+  const entries = Object.entries(data).map(([key, value]) =>
+    renderFns[UNCHANGED_VALUE]({ key, value }, depth + 1) // Ajuste: Línea sin salto de línea antes de la expresión
   ); // Se añadió la coma final para cumplir con el estilo esperado
 
   return `{\n${entries.join('\n')}\n${getIndentation(depth)}  }`;
@@ -26,7 +26,7 @@ const formatValue = (data, depth, renderFns) => {
 const renderFns = {
   [ROOT_VALUE]: ({ children }, depth, iterate) => {
     const renderedChildren = children.flatMap((child) => iterate(child, depth + 1));
-    return `{\n${renderedChildren.join('\n')}\n}`; // Se asegura de que la línea esté bien
+    return `{\n${renderedChildren.join('\n')}\n}`; // Asegurarse de que esta línea esté bien
   },
 
   [NESTED_VALUE]: ({ key, children }, depth, iterate) => {
@@ -55,7 +55,7 @@ const stylish = (diff) => formatNode(diff, 0);
 // Función que envuelve la salida del formato "stylish" con llaves adicionales
 const stylishWithBraces = (diff) => {
   const innerOutput = stylish(diff);
-  return `{\n${innerOutput}\n}`; // Se asegura de que esta línea esté bien
+  return `{\n${innerOutput}\n}`; // Asegurarse de que esta línea esté bien
 };
 
 export {
