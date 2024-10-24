@@ -16,28 +16,31 @@ const formatValue = (value) => {
 };
 
 const nodeHandlers = {
-  [ADD_VALUE]: (node, path) => {
+  [ADD_VALUE]: ((node, path) => {
     const propertyPath = buildPropertyPath(node.key, path);
     return `Property '${propertyPath}' was added with value: ${formatValue(node.value)}`;
-  },
-  [CHANGED_VALUE]: ({ key, value1, value2 }, path) => {
+  }),
+  [CHANGED_VALUE]: (({ key, value1, value2 }, path) => {
     const propertyPath = buildPropertyPath(key, path);
     return `Property '${propertyPath}' was updated. From ${formatValue(value1)} to ${formatValue(value2)}`;
-  },
-  [DELETED_VALUE]: (node, path) => {
+  }),
+  [DELETED_VALUE]: ((node, path) => {
     const propertyPath = buildPropertyPath(node.key, path);
     return `Property '${propertyPath}' was removed`;
-  },
-  [NESTED_VALUE]: ({ key, children }, path, traverse) =>
-    children.flatMap(child => traverse(child, [...path, key])),
-  [ROOT_VALUE]: ({ children }, path, traverse) =>
-    children.flatMap(child => traverse(child, path)),
-  [UNCHANGED_VALUE]: () => [],
+  }),
+  [NESTED_VALUE]: (({ key, children }, path, traverse) => 
+    children.flatMap((child) => traverse(child, [...path, key]))
+  ),
+  [ROOT_VALUE]: (({ children }, path, traverse) => 
+    children.flatMap((child) => traverse(child, path))
+  ),
+  [UNCHANGED_VALUE]: (() => []),
 };
 
 const plain = (diff) => {
-  const traverse = (node, currentPath) =>
-    nodeHandlers[node.type](node, currentPath, traverse);
+  const traverse = ((node, currentPath) => 
+    nodeHandlers[node.type](node, currentPath, traverse)
+  );
   return traverse(diff, []).join('\n');
 };
 
