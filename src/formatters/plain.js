@@ -7,14 +7,13 @@ const NESTED_VALUE = 'nested';
 const CHANGED_VALUE = 'changed';
 const ROOT_VALUE = 'root';
 
-const buildPropertyPath = (property, ancestors) => 
-  [...ancestors, property].join('.');
+const buildPropertyPath = (property, ancestors) => [...ancestors, property].join('.');
 
 const formatValue = (value) => {
   if (value === null) return value;
   if (_.isObject(value)) return '[complex value]';
   return typeof value === 'string' ? `'${value}'` : String(value);
-}
+};
 
 const nodeHandlers = {
   [ADD_VALUE]: (node, path) => {
@@ -29,15 +28,15 @@ const nodeHandlers = {
     const propertyPath = buildPropertyPath(node.key, path);
     return `Property '${propertyPath}' was removed`;
   },
-  [NESTED_VALUE]: ({ key, children }, path, traverse) => 
-    children.flatMap(child => traverse(child, [...path, key])),
-  [ROOT_VALUE]: ({ children }, path, traverse) => 
-    children.flatMap(child => traverse(child, path)),
-  [UNCHANGED_VALUE]: () => []
+  [NESTED_VALUE]: ({ key, children }, path, traverse) =>
+    children.flatMap((child) => traverse(child, [...path, key])),
+  [ROOT_VALUE]: ({ children }, path, traverse) =>
+    children.flatMap((child) => traverse(child, path)),
+  [UNCHANGED_VALUE]: () => [],
 };
 
 const plain = (diff) => {
-  const traverse = (node, currentPath) => 
+  const traverse = (node, currentPath) =>
     nodeHandlers[node.type](node, currentPath, traverse);
   return traverse(diff, []).join('\n');
 };
