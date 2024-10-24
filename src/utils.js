@@ -7,6 +7,16 @@ const NESTED_VALUE = 'nested';
 const CHANGED_VALUE = 'changed';
 const ROOT_VALUE = 'root';
 
+const getIndentation = (depth, spacesCount = 4) => ' '.repeat(depth * spacesCount - 2);
+
+const formatValue = (data, depth, renderFunctions) => {
+  if (!_.isObject(data)) return String(data);
+
+  const entries = Object.entries(data).map(([key, value]) => renderFunctions[UNCHANGED_VALUE]({ key, value }, depth + 1));
+
+  return `{\n${entries.join('\n')}\n${getIndentation(depth)}  }`;
+};
+
 const renderFunctions = {
   [ROOT_VALUE]: ({ children }, depth, iterate) => {
     const renderedChildren = children.flatMap((child) => iterate(child, depth + 1));
@@ -30,16 +40,6 @@ const renderFunctions = {
     const formattedValue2 = `${getIndentation(depth)}+ ${key}: ${formatValue(value2, depth, renderFunctions)}`;
     return [formattedValue1, formattedValue2].join('\n');
   },
-};
-
-const getIndentation = (depth, spacesCount = 4) => ' '.repeat(depth * spacesCount - 2);
-
-const formatValue = (data, depth, renderFunctions) => {
-  if (!_.isObject(data)) return String(data);
-
-  const entries = Object.entries(data).map(([key, value]) => renderFunctions[UNCHANGED_VALUE]({ key, value }, depth + 1));
-
-  return `{\n${entries.join('\n')}\n${getIndentation(depth)}  }`;
 };
 
 const formatNode = (node, depth) => renderFunctions[node.type](node, depth, formatNode);
