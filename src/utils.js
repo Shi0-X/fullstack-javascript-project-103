@@ -16,7 +16,8 @@ const formatValue = (data, depth, renderFns) => {
   if (!_.isObject(data)) return String(data);
 
   const entries = Object.entries(data).map(([key, value]) =>
-    renderFns[UNCHANGED_VALUE]({ key, value }, depth + 1));
+    renderFns[UNCHANGED_VALUE]({ key, value }, depth + 1)
+  ); // Aquí se añadió un retorno implícito sin saltos de línea.
 
   return `{\n${entries.join('\n')}\n${getIndentation(depth)}  }`;
 };
@@ -54,7 +55,7 @@ const stylish = (diff) => formatNode(diff, 0);
 // Función que envuelve la salida del formato "stylish" con llaves adicionales
 const stylishWithBraces = (diff) => {
   const innerOutput = stylish(diff);
-  return `{\n${innerOutput}\n}`;
+  return `{\n${innerOutput}\n}`; // Envuelve el resultado dentro de un bloque de llaves
 };
 
 export {
