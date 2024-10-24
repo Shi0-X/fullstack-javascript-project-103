@@ -15,9 +15,9 @@ const getIndentation = (depth, spacesCount = 4) => ' '.repeat(depth * spacesCoun
 const formatValue = (data, depth, renderFns) => {
   if (!_.isObject(data)) return String(data);
 
-  const entries = Object.entries(data).map(([key, value]) =>
+  const entries = Object.entries(data).map(([key, value]) => 
     renderFns[UNCHANGED_VALUE]({ key, value }, depth + 1)
-  ); // Aquí se añadió un retorno implícito sin saltos de línea.
+  ); // Sin salto de línea antes de esta expresión
 
   return `{\n${entries.join('\n')}\n${getIndentation(depth)}  }`;
 };
