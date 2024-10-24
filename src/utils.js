@@ -15,8 +15,8 @@ const getIndentation = (depth, spacesCount = 4) => ' '.repeat(depth * spacesCoun
 const formatValue = (data, depth, renderFns) => {
   if (!_.isObject(data)) return String(data);
 
-  const entries = Object.entries(data).map(([key, value]) =>
-    renderFns[UNCHANGED_VALUE]({ key, value }, depth + 1));
+  // eslint-disable-next-line max-len
+  const entries = Object.entries(data).map(([key, value]) => renderFns[UNCHANGED_VALUE]({ key, value }, depth + 1, formatValue));
 
   return `{\n${entries.join('\n')}\n${getIndentation(depth)}  }`;
 };
@@ -24,12 +24,12 @@ const formatValue = (data, depth, renderFns) => {
 // Objeto que contiene funciones para renderizar diferentes tipos de nodos
 const renderFns = {
   [ROOT_VALUE]: ({ children }, depth, iterate) => {
-    const renderedChildren = children.flatMap((child) => iterate(child, depth + 1));
+    const renderedChildren = children.flatMap((child) => iterate(child, depth + 1, iterate));
     return `{\n${renderedChildren.join('\n')}\n}`;
   },
 
   [NESTED_VALUE]: ({ key, children }, depth, iterate) => {
-    const nestedChildren = children.flatMap((child) => iterate(child, depth + 1));
+    const nestedChildren = children.flatMap((child) => iterate(child, depth + 1, iterate));
     return `${getIndentation(depth)}  ${key}: {\n${nestedChildren.join('\n')}\n${getIndentation(depth)}  }`;
   },
 
