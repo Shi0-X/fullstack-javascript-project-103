@@ -1,4 +1,4 @@
-import { stylish, formatValue } from '../utils.js';
+import { stylish } from '../utils.js';
 
 const stylishWithBraces = (diff) => {
   const innerOutput = stylish(diff);
