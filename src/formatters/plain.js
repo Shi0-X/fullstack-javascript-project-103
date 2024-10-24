@@ -38,8 +38,7 @@ const nodeHandlers = {
 };
 
 const plain = (diff) => {
-  const traverse = (node, currentPath) =>
-    nodeHandlers[node.type](node, currentPath, traverse);
+  const traverse = (node, currentPath) => nodeHandlers[node.type](node, currentPath, traverse);
   return traverse(diff, []).join('\n');
 };
 
