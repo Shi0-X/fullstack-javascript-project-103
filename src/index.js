@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import YAML from 'yaml';
 import formatDiff from './formatters/index.js';
-import { formatNode, formatValue, stylish } from './utils.js';
+// import { stylish } from './utils.js';
 
 const determineFormat = (filePath) => {
   const ext = path.extname(filePath).slice(1);
@@ -52,10 +52,10 @@ const buildDiff = (data1, data2) => {
   });
 };
 
-const stylishWithBraces = (diff) => {
-  const innerOutput = stylish(diff);
-  return `{\n${innerOutput}\n}`;
-};
+// const stylishWithBraces = (diff) => {
+//  const innerOutput = stylish(diff);
+//  return `{\n${innerOutput}\n}`;
+// };
 
 const genDiff = (file1Path, file2Path, format = 'stylish') => {
   const data1 = parseFile(file1Path);
