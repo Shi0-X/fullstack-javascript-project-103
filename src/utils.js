@@ -16,17 +16,16 @@ const formatValue = (data, depth, renderFns) => {
   if (!_.isObject(data)) return String(data);
 
   const entries = Object.entries(data).map(([key, value]) =>
-    renderFns[UNCHANGED_VALUE]({ key, value }, depth + 1)
-  );
+    renderFns[UNCHANGED_VALUE]({ key, value }, depth + 1));
 
-  return `{\n${entries.join('\n')}\n${getIndentation(depth)}}`;
+  return `{\n${entries.join('\n')}\n${getIndentation(depth)}  }`;
 };
 
 // Objeto que contiene funciones para renderizar diferentes tipos de nodos
 const renderFns = {
   [ROOT_VALUE]: ({ children }, depth, iterate) => {
     const renderedChildren = children.flatMap((child) => iterate(child, depth + 1));
-    return `{\n${renderedChildren.join('\n')}\n${getIndentation(depth)}}`;
+    return `{\n${renderedChildren.join('\n')}\n}`;
   },
 
   [NESTED_VALUE]: ({ key, children }, depth, iterate) => {
@@ -55,12 +54,9 @@ const stylish = (diff) => formatNode(diff, 0);
 // Función que envuelve la salida del formato "stylish" con llaves adicionales
 const stylishWithBraces = (diff) => {
   const innerOutput = stylish(diff);
-  return `{\n${innerOutput}\n${getIndentation(0)}}`;
+  return `{\n${innerOutput}\n}`;
 };
 
 export {
-  formatNode,
-  formatValue,
-  stylish,
-  stylishWithBraces,
+  formatNode, formatValue, stylish, stylishWithBraces,
 };
