@@ -27,8 +27,8 @@ const parseFile = (filePath) => {
 };
 
 const buildDiff = (data1, data2) => {
-  // Creamos una copia inmutable de las claves y luego ordenamos
-  const keys = [...new Set([...Object.keys(data1), ...Object.keys(data2)])].sort();
+  // Creamos una copia inmutable del array usando slice() antes de ordenar
+  const keys = [...new Set([...Object.keys(data1), ...Object.keys(data2)])].slice().sort();
 
   return keys.map((key) => {
     if (!(key in data1)) {
