@@ -26,9 +26,20 @@ const parseFile = (filePath) => {
   return null;
 };
 
+// Reemplazamos el sort con un enfoque basado en reduce
+const sortedKeys = (data1, data2) => {
+  const keys = [...new Set([...Object.keys(data1), ...Object.keys(data2)])];
+  return keys.reduce((acc, key) => {
+    let i = 0;
+    while (i < acc.length && acc[i] < key) {
+      i += 1;
+    }
+    return [...acc.slice(0, i), key, ...acc.slice(i)];
+  }, []);
+};
+
 const buildDiff = (data1, data2) => {
-  // Creamos una copia inmutable del array usando slice() antes de ordenar
-  const keys = [...new Set([...Object.keys(data1), ...Object.keys(data2)])].slice().sort();
+  const keys = sortedKeys(data1, data2);
 
   return keys.map((key) => {
     if (!(key in data1)) {
