@@ -1,11 +1,11 @@
+import path from 'path';
+import genDiff from '../src/index.js';
+
 describe('testUtils', () => {
   it('should pass', () => {
     expect(true).toBe(true);
   });
 });
-
-import genDiff from '../src/index.js';
-import path from 'path';
 
 const getFixturePath = (filename) => path.join('__fixtures__', filename);
 

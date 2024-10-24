@@ -40,7 +40,9 @@ const buildDiff = (data1, data2) => {
       if (typeof data1[key] === 'object' && data1[key] !== null && typeof data2[key] === 'object' && data2[key] !== null) {
         result = { key, type: 'nested', children: buildDiff(data1[key], data2[key]) };
       } else {
-        result = { key, type: 'changed', value1: data1[key], value2: data2[key] };
+        result = {
+          key, type: 'changed', value1: data1[key], value2: data2[key],
+        };
       }
     } else {
       result = { key, type: 'unchanged', value: data1[key] };
