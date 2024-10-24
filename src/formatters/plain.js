@@ -29,9 +29,9 @@ const nodeHandlers = {
     return `Property '${propertyPath}' was removed`;
   },
   [NESTED_VALUE]: ({ key, children }, path, traverse) =>
-    children.flatMap((child) => traverse(child, [...path, key])),
+    children.flatMap(child => traverse(child, [...path, key])),
   [ROOT_VALUE]: ({ children }, path, traverse) =>
-    children.flatMap((child) => traverse(child, path)),
+    children.flatMap(child => traverse(child, path)),
   [UNCHANGED_VALUE]: () => [],
 };
 
