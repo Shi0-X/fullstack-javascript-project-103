@@ -20,28 +20,19 @@ const formatValue = (value) => {
 
 const nodeHandlers = {
   [ADD_VALUE]: (node, path) => 
-    `Property '${buildPropertyPath(node.key, path)}' 
-     was added with value: ${formatValue(node.value)}`,
+    `Property '${buildPropertyPath(node.key, path)}' was added with value: ${formatValue(node.value)}`,
 
-  [CHANGED_VALUE]: ({ key, value1, value2 }, path) => {
-    const propertyPath = buildPropertyPath(key, path);
-    return `Property '${propertyPath}' was updated.
-            From ${formatValue(value1)} to ${formatValue(value2)}`;
-  },
+  [CHANGED_VALUE]: ({ key, value1, value2 }, path) => 
+    `Property '${buildPropertyPath(key, path)}' was updated. From ${formatValue(value1)} to ${formatValue(value2)}`,
 
   [DELETED_VALUE]: (node, path) => 
-    `Property '${buildPropertyPath(node.key, path)}' 
-     was removed`,
+    `Property '${buildPropertyPath(node.key, path)}' was removed`,
 
   [NESTED_VALUE]: ({ key, children }, path, traverse) => 
-    children.flatMap((child) => 
-      traverse(child, [...path, key])
-    ),
+    children.flatMap((child) => traverse(child, [...path, key])),
 
   [ROOT_VALUE]: ({ children }, path, traverse) => 
-    children.flatMap((child) => 
-      traverse(child, path)
-    ),
+    children.flatMap((child) => traverse(child, path)),
 
   [UNCHANGED_VALUE]: () => [],
 };
